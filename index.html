@@ -1,12 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Page</title>
-</head>
-<body>
-    <h1>Welcome to My GitHub Page</h1>
-    <p>This is a simple HTML page hosted on GitHub Pages.</p>
-</body>
-</html>
+---
+layout: default
+title: Hands Hands Revolution
+---
+
+<h1>Welcome to Hands Hands Revolution</h1>
+<img src="/images/HHRGamePlay.jpg" alt="HHR Game Play">
+
+<section id="introduction">
+    <h2>Introduction</h2>
+    <p>Hands Hands Revolution is designed to bring the joy of dance to everyone, regardless of mobility constraints. This project constructs a simple augmented reality (AR) game on the specified PICO-4ML broad. This game is played by one player, holding up the broad and interacting with the LCD screen embedded in it. As the arrows move up the screen your goals is the show the right direction when the arrow is about to overlay its outline. When the player does this correclty the score increaes.
+	    
+	</p>
+	<img src="/images/designOfEnclosure.jpg" alt="Design with Enclosure">
+</section>
+
+<section id="Enviroment and Components">
+	<h2>Enviroment and Components<h2>
+		
+	<h3>Components</h3>
+	<img src="/images/cable.png" alt="Pico 4ML">
+	<img src="/images/pico4ml.jpg" alt="Pico 4ML2">
+
+	<h3>BlockDiagram</h3>
+    <img src="/images/BlockDiagram.png" alt="Block Diagram">
+</section>
+
+<section id="demo">
+    <h2>Demo</h2>
+    <p>Watch the gameplay video below:</p>
+    <video width="640" height="480" controls>
+        <source src="/images/demo.mp4" type="video/mp4">
+    </video>
+</section>
+
+<section id="development-overview">
+    <h2>Development Overview</h2>
+    <p>
+	    First made a game that can get the camera feed and have the game work without any human feedback. The scoring system and everythign worked. Then I made my model with EdgeImpulse and trained it with my hand by using 150 images of my hand. I retained with differnt settings seeign that I had a lot of errors. After all of that I incoperate it into the game.
+	<img src="/images/trainingImages.png" alt="Labeled 150 differnt images of my hand in differnt position and settings">
+	<img src="/images/TrainedModel.png" alt="Result of model">
+	<img src="/images/rightML.jpg" alt="hand inferance">
+	<img src="/images/upML.jpg" alt="hand inferance">
+	<img src="/images/terminalReading.jpg" alt="hand inferance">
+		
+    </p>
+</section>
+
+<section id="challenges">
+    <h2>Challenges</h2>
+    <p>One of the main challenges was ensuring accurate motion detection in varied lighting conditions. Solutions involved training more photos with different environmental lightings. Having the screen on the same plan as the camera to give the user a nice user interface to play along with. The Pico4ML have strong advesives on the LCD which makes it tricky to remove. Even when the advesive is removed having the screen working after becaues very unrelaible where it even had even catch on fire. Runnign the tinyml infereance well the game was running was not relizable and hard to setup. Some of the screens stopped working entirely after a long period of usage.</p>
+    <h3>Removing Screen</h3>
+    <img src="/images/failure1.jpg" alt="Failture 1 Pressing the screen down with sticks ">
+	<img src="/images/failure2.jpg" alt="Failture 2 Screen breaks easily">
+</section>
+
+<section id="reflection-on-design/future-improvements">
+    <h2>Reflection on Design</h2>
+    <p>I think the design was nice and made the game nice and invative and achieved the design of HHR.I would use a larger screen. This would make the game more interactive and having it on the same plan of the camera it wouldn't stop me from having broken hardware since the current Pico4ML keeps breaking when I put it into the same plan. Having the camera feed as the same plan makes it nice to see the feed of the game as it is moving and complemting the game. Traning the ML with more photos with other hands. Increasing the defucalty instead of having the speed increase as the game goes on.Making more modes. Having Audio. Lastly having a leaderboard. </p>
+</section>
+
+<section id="advantages">
+    <h2>Advantages</h2>
+    <ul>
+        <li>Inclusive Design: Makes dancing games accessible to just needing your hands only and point to that dirrection.</li>
+        <li>Just Pico4ML setup</li>
+    </ul>
+</section>
+
+
+h1>PIO Module in Hands Hands Revolution</h1>
+<p>We utilized the PIO capability of the RP2040 to drive various I/O functions like I2C and SPI more efficiently. Below is the detailed implementation for image processing with PIO.</p>
+
+<section id="pio-module">
+    <h1>PIO for Image Processing</h1>
+    <p>This section provides the PIO assembly code and the corresponding C-SDK initialization for capturing image data via PIO, which simulates an I2C-like protocol for image retrieval.</p>
+
+    <h3>PIO Assembly Code</h3>
+    <pre><code class="language-assembly">.program image
+.wrap_target
+    wait 1 pin 9  ; wait for hsync
+    wait 1 pin 8  ; wait for rising pclk
+    in pins 1
+    wait 0 pin 8
+.wrap
+</code></pre>
+
+    <h3>C-SDK Initialization Code</h3>
+    <pre><code class="language-c">void image_program_init(PIO pio, uint sm, uint offset, uint pin_base) {
+    pio_sm_set_consecutive_pindirs(pio, sm, pin_base, 1, false);
+
+    pio_sm_config c = image_program_get_default_config(offset);
+    sm_config_set_in_pins(&amp;c, pin_base);
+    sm_config_set_in_shift(&amp;c, false, true, 8);
+    sm_config_set_fifo_join(&amp;c, PIO_FIFO_JOIN_RX);
+    pio_sm_init(pio, sm, offset, &amp;c);
+    //pio_sm_set_enabled(pio, sm, true);
+}
+</code></pre>
+</section>
+
+<p>Exploring the RP2040 through these labs has given us deep insights into the embedded system capabilities and the flexibility that programmable I/O offers for custom hardware interfacing.</p>
